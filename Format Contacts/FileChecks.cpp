@@ -28,13 +28,14 @@ is_open(const std::ofstream &pFile, const std::string &pName) {
 		return true;
 }
 
-
+// this returns true if there is not a single character in the file
+// also returns true if the file couldn't be opened, but in that case
+// we want to print another message.
 bool
 is_empty(std::ifstream  &pFile, const std::string &pName) {
 	 if (pFile.peek() == std::ifstream::traits_type::eof()) {
 		 std::cerr << "\nError: \"" << pName << "\" is empty."
 		           << "\n\t\tExiting... \n" << std::endl;
-
 		 return true;
 	 }
     return false;
