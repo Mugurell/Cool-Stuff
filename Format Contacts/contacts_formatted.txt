@@ -1,0 +1,26 @@
+
+	|| File created Jun 17 2015 at 15:49:02 ||
+
+This contains a list of formatted contacts from "contacts.txt".
+----------------------------------------
+
+
+Formatted list of good contacts:
+
+drew: 973.555.0130
+	
+lee: 609.555.0132
+	201.555.0175
+	
+gregory: 658.289.4212
+	
+----------------------------------------
+
+
+Formatted list of contacts with problems:
+
+morgan: 201.555.2368000
+	862.555.0123000
+	
+lee: 800.555.000000
+	
