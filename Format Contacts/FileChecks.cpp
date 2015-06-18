@@ -8,7 +8,8 @@
 
 
 bool
-is_open(const std::ifstream &pFile, const std::string &pName) {
+is_open(std::ifstream &pFile, const std::string &pName) {
+	pFile.open(pName);
 	if (! pFile.is_open()) {
 		std::cout << "\nError: Can't open \"" << pName
 				  << "\".\n\t\tExiting...\n" << std::endl;
@@ -19,7 +20,8 @@ is_open(const std::ifstream &pFile, const std::string &pName) {
 
 
 bool
-is_open(const std::ofstream &pFile, const std::string &pName) {
+is_open(std::ofstream &pFile, const std::string &pName) {
+    pFile.open(pName);
 	if (! pFile.is_open()) {
 		std::cout << "\nError: Can't open \"" << pName
 				  << "\".\n\tExiting...\n" << std::endl;
@@ -52,7 +54,7 @@ clear_cin(void) {
 
 bool
 valid_input(int argc, char **argv, std::ifstream &input_file,
-          std::string &inputFName) {
+            std::string &inputFName) {
 	bool valid_choice = false;
 	do {
 		std::cout << "\nPlease select input txt file:\n"
@@ -94,8 +96,14 @@ valid_input(int argc, char **argv, std::ifstream &input_file,
 		}
 	} while (!valid_choice);
 
-    input_file.open(inputFName);
 	clear_cin();
+
+// Test to see if the indicated file was opened and contains any data
+    if (!is_open(input_file, inputFName))
+        return false;
+    else
+        if (is_empty(input_file, inputFName))
+            return false;
 
 	return valid_choice;
 }
@@ -103,7 +111,7 @@ valid_input(int argc, char **argv, std::ifstream &input_file,
 
 bool
 valid_output(int argc, char **argv, const std::string &inputFName,
-           std::ofstream &output_file, std::string &outputFName) {
+             std::ofstream &output_file, std::string &outputFName) {
 	bool valid_choice = false;
 	do {
 		std::cout << "\n\n\nPlease select output txt file:\n"
@@ -172,8 +180,10 @@ valid_output(int argc, char **argv, const std::string &inputFName,
 		}
 	} while (!valid_choice);
 
-    output_file.open(outputFName);
 	clear_cin();
+
+    if (!is_open(output_file, outputFName))
+        return false;
 
 	return valid_choice;
 }

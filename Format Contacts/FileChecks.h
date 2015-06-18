@@ -19,8 +19,8 @@ bool valid_input(int argc, char **argv, std::ifstream &input_file,
 bool valid_output(int argc, char **argv, const std::string &inputFName,
                   std::ofstream &output_file, std::string &outputFName);
 
-bool is_open(const std::ifstream&, const std::string&);
-bool is_open(const std::ofstream&, const std::string&);
+bool is_open(std::ifstream&, const std::string&);
+bool is_open(std::ofstream&, const std::string&);
 bool is_empty(std::ifstream&, const std::string&);
 
 void inline clear_cin(void);

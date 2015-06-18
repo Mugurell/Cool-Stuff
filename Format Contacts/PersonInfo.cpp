@@ -83,12 +83,10 @@ PersonInfo::valid(std::string &number) {
 
 	// Check if out string now contains only digits - is a number.
 	for (auto nr : number)
-		if (!isdigit(nr))
-			return false;
+		if (!isdigit(nr)) return false;
 
 	// Be sure it has exactly 10 numbers - proper phone # format.
-	if (number.size() != 10)
-		return false;
+	if (number.size() != 10) return false;
 
 		// If all the checks above failed means we have a valid phone # !
 	else

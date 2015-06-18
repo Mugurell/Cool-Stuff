@@ -57,18 +57,13 @@ int main(int argc, char **argv)
 	std::ofstream output_file;       // output file for the formatted contacts
 	std::string outputFName;         // name of the output file
 
-    // ask the user to chose the IO files and try to open them.
+
+/*
+ * Ask the user to pick the IO files and check if they are valid.
+ */
     if (!valid_input(argc, argv, input_file, inputFName)) return 0;
     if (!valid_output(argc, argv, inputFName, output_file, outputFName))
         return 0;
-
-
-/*
- * Check if the files were opened and if the source contains any data.
- */
-	if (!is_open(input_file, inputFName)) return -1;
-	if (!is_open(output_file, outputFName)) return -1;
-	if (is_empty(input_file, inputFName)) return -1;
 
 
 /*
