@@ -3,7 +3,7 @@
 **
 **  Author:           Lingurar Petru-Mugurel
 **  Written:          29.05.2015 19:53
-**  Last updated:     01.06.2015 12:02
+**  Last updated:     18.06.2015 12:02
 **
 **  Compilation:  g++ -std=c++11 -Wall -Werror -Wextra -pedantic -Wshadow
 **   (g++ 5.1)        -Woverloaded-virtual -Winvalid-pch -Wcast-align
@@ -14,18 +14,15 @@
 **  Execution:    ./...
 **
 **  Description:
-**  --- This is a description of what the program does ---
+**  Will read a text file with contacts info (name (+) phone number(s)), format
+**  them (insert dot separators, check for the 10 digit fixed lenght), and save
+**  them to another text file in formatted version.
 **
 **  Bugs:
 **  --- None ---
 **
 **  TODO:
 **  --- None ---
-**
-**  Expected result:
-**  Will read a text file with contacts info (name (+) phone number(s)), format
-**  them (insert dot separators, check for the 10 digit fixed lenght), and save
-**  them to another text file in formatted version.
 **
 **  Notes:
 **  Simple program but in which I used most of what I've learned until now.
