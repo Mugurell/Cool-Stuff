@@ -84,6 +84,7 @@ bin/
 
 # built native files
 *.o
+*.out
 *.so
 
 # generated files
@@ -116,3 +117,7 @@ Thumbs.db
 **.zip
 **.rar
 **.7zip
+
+
+#Ignore stupid .fuse_hidden files on Linux
+.fuse*
