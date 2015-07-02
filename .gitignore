@@ -58,12 +58,10 @@ crashlytics-build.properties
 *.sm
 
 # Ignore `bin` dir
-bin/
-# or
 **/bin/*
 
 # Unignore all `.jar` in `bin` dir
-!**/bin/*.jar
+#!**/bin/*.jar
 
 # Ignore all `library.jar` in `bin` dir
 **/bin/library.jar
@@ -79,8 +77,6 @@ bin/
 # files for the dex VM
 *.dex
 
-# Java class files
-*.class
 
 # built native files
 *.o
@@ -88,7 +84,6 @@ bin/
 *.so
 
 # generated files
-bin/
 gen/
 
 # Ignore gradle files
