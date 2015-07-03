@@ -60,7 +60,7 @@ int main(int argc, char **argv)
  */
     if (!valid_input(argc, argv, input_file, inputFName)) return 0;
     if (!valid_output(argc, argv, inputFName, output_file, outputFName))
-        return 0;
+return 0;
 
 
 /*
