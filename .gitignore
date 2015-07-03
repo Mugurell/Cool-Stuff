@@ -24,7 +24,11 @@
 # .idea/    - I use it on more platforms.
 
 # (**/ to recurse through all sub-folders)
+<<<<<<< HEAD
 */.idea/workspace.xml
+=======
+*/.idea/workspace.xml 
+>>>>>>> origin/master
 */.idea/tasks.xml
 */.idea/datasources.xml
 */.idea/dataSources.ids
