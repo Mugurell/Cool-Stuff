@@ -51,7 +51,7 @@ typedef struct words {
 char* get_input_file();
 Words *count_words(char*);
 void print_words_table(Words*, const size_t);
-size_t calculate_rep_width(size_t);     // recursive function
+size_t calculate_rep_width(size_t, const size_t);
 void superfluous_delay();               // but cool nonetheless
 void blastoff();                        // create some tension
 void clear_stdin();
@@ -86,7 +86,7 @@ int main()
     //blastoff();
 
     // print our table
-    print_words_table(words_map, 200);
+    print_words_table(words_map, 80);
 
     // even though the OS will probably free the heap allocated memory when the
     // program exists, it is good practice to always clean after us ourself
@@ -312,11 +312,11 @@ void print_words_table(Words *head, const size_t table_width)
     }
 
 
-    // for the table to look just right will need to calculate at runtime
+    // for the table to look just right will need to calculate
     // the space occupied by the max_rep variable - how many spaces it occupies
     char timesx[] = "times x 1";
     size_t timesx_width = strlen(timesx);
-    size_t rep_width = calculate_rep_width(max_rep);
+    size_t rep_width = calculate_rep_width(max_rep, 0);
     timesx_width += rep_width;
     size_t current_width = timesx_width;
 
@@ -375,13 +375,12 @@ void print_words_table(Words *head, const size_t table_width)
 }
 
 
-size_t calculate_rep_width(size_t rep)
+size_t calculate_rep_width(size_t rep, const size_t start_at)
 {
-    static int count = 0;
-    // TODO: intreaba-l pe Horia cum resetezi count la 0
+    int count = start_at;
     count++;
     if (rep >= 10)
-        calculate_rep_width(rep / 10);
+        calculate_rep_width(rep / 10, 0);
 
     return count;
 }
