@@ -54,6 +54,7 @@ Words *count_words(char*);
 void print_words_table(Words*, unsigned);
 
 // little helper functions
+Words* check_table_width(Words*, unsigned);
 bool valid_table_width(Words*, unsigned*);
 unsigned calculate_rep_width(unsigned);
 unsigned calculate_timesx_width(const unsigned);
@@ -81,20 +82,18 @@ int main()
 
     char *input_file_name = get_input_file();
 
-    puts("\nNow that we have a valid input file"
-         "\nI'm gonna do my magic on it. Might take a while...");
+    puts("\n\nNow that we have a valid input file,"
+         "\nI'm gonna count and store the number of repetitions for each word."
+         "\nMight take a while...");
 
-    superfluous_delay();
     Words *words_map = count_words(input_file_name);
     superfluous_delay();
 
     puts("\nDone!\n\n"
-         "\nA nice table can now be drawn based on the content of your file");
+         "\nA nice table can now be drawn based on the contents of your file");
     printf("\nAbout that, how wide would you want the table to be? -> ");
     unsigned preffered_table_widtd;
     fscanf(stdin, "%u", &preffered_table_widtd);
-
-    blastoff();     // create some tension..
 
     // print our table
     print_words_table(words_map, preffered_table_widtd);
@@ -134,6 +133,7 @@ char* get_input_file()
             perror("Allocating memory for the input file name\n");
             exit(EXIT_FAILURE);
         }
+
         fgets(input_file_name, 1000, stdin);
         // remove the '\n' appended by fgets
         input_file_name[strcspn(input_file_name, "\n")] = '\0';
@@ -146,8 +146,8 @@ char* get_input_file()
             perror("\nError");
             abramburica:;
 
-            char try_again;
-            while (try_again != 'Y' || try_again != 'y')
+            char try_again = ' ';
+            while (try_again != 'Y' && try_again != 'y')
             {
                 printf("\nTry again? [N] / [Y] -> ");
                 try_again = fgetc(stdin);
@@ -168,7 +168,7 @@ char* get_input_file()
                         break;
                 }
             }
-
+            continue;      // start again from while(!valid_name)
         }
         else
         {
@@ -195,6 +195,7 @@ char* get_input_file()
         {
             puts("\nError: The input file does not contain any valid "
                  "characters!");
+            valid_name = FALSE;
             goto abramburica;
         }
     }
@@ -321,106 +322,174 @@ Words *count_words(char * input_file_name)
 
 void print_words_table(Words *head, unsigned table_width)
 {
-    // first assure that the requested table_width accomodates the widest word.
+    // First assure that the requested table_width accommodates the widest word.
+    // If it does not, this function will ask the user for a new width at least
+    // equal to the calculated width of the widest word which will be returned
+    // here (we send table_width as a pointer for that).
+    // If the user doesn't want to enter a new bigger width, valid_table_width
+    // will return a bool with value false, so, we'll return to main.
     if (!valid_table_width(head, &table_width))
         return;
 
+
     Words *current = head;      // current list head used for normal operations
     Words *currentY = head;     // current list head used in drawing the Y axis
-    Words *currentX = head;     // current list head used in drqwing the X axis
-    unsigned max_rep = 0;       // highest number of word repetitions
+    Words *currentX = head;     // current list head used in drawing the X axis
+    Words *maximumX = head;     // points to the last word we can fit in table
 
-    // get the maximum highest number of identical words
-    // will determine the length of our Y axis
-    while (current != NULL)
-    {
-        if (current->repetitions > max_rep)
-            max_rep = current->repetitions;
-        current = current->next;
-    }
 
-    // get the total number of identical words in our list
-    // will determine the length of our X axis
-    current = head;
-    unsigned total_words_no = 0;
-    while (current != NULL)
-    {
-        total_words_no++;
-        current = current->next;
-    }
-
-    // for the table to look just right will need to calculate at runtime
-    // the space occupied by the max_rep variable - how many spaces it occupies
-    unsigned timesx_initial_width = calculate_timesx_width(max_rep);
+    // Determine if our table can fit the requested table_width
+    // If not, we'll print until that limit - lenght of the X coordinate.
+    maximumX = check_table_width(head, table_width);
 
     // if the requested table width is smaller than the total width of the
     // identical words plus the table's structure
     bool need_another_table = false;
+    if (maximumX != NULL)
+        need_another_table = true;
 
-
-
-    // print the table body
-    puts("\n\n");
-    while (max_rep > 0) {
-        print_timesx(timesx_initial_width, max_rep);
-        currentY = head;
-        unsigned current_width = 0;
-        while (currentY != NULL)
+    while (current != maximumX)     // this is the block we'll print
+    {
+        // Get the highest number of identical words we can fit in our table.
+        // Will determine the length of our Y axis.
+        unsigned max_rep = 0;       // highest number of word repetitions
+        while (current != maximumX)
         {
-            unsigned word_width = strlen(currentY->word);
-            current_width += word_width + 1;   // +1 for the words separator
-            if (current_width > table_width)
+            if (current->repetitions > max_rep)
+                max_rep = current->repetitions;
+            current = current->next;
+        }
+
+        // for the table to look just right will need to calculate at runtime
+        // how many spaces the unsigned max_rep occupies when printed
+        unsigned timesx_initial_width = calculate_timesx_width(max_rep);
+
+
+        // print the table body.
+        puts("\n\n");
+        static bool blastoff_used = false;
+        while (max_rep > 0)
+        {
+            // create some tension before beginning to print the table
+            if (!blastoff_used)
             {
-                need_another_table = true;
-                current = currentY;
-                currentY = NULL;
+                blastoff();
+                blastoff_used = true;
             }
-            else
+            print_timesx(timesx_initial_width, max_rep);
+            currentY = head;
+            unsigned current_width = timesx_initial_width;
+            while (currentY != maximumX)    // stay within boundaries
             {
+                unsigned word_width = strlen(currentY->word);
+                current_width += word_width + 1;   // +1 for the words separator
+
                 if (currentY->repetitions >= max_rep)
-                    // call a small function to make sure this will be centered
+                    // call a small function to make sure the chosen symbol
+                    // will be centered
                     print_specifier(word_width, '*');
                 else
                     print_specifier(word_width, ' ');
 
                 currentY = currentY->next;
+
             }
+            putchar('\n');
+            max_rep--;
         }
-        putchar('\n');
-        max_rep--;
+
+
+        printf("%*s%*c ", timesx_initial_width / 2 + 1, "Word",
+               (timesx_initial_width - timesx_initial_width / 2) - 3, '|');
+        // -1 because we print our own delimiter '|'
+
+        while (currentX != (maximumX != head ? maximumX : NULL))
+        {
+            printf("%s ", currentX->word);
+            currentX = currentX->next;
+        }
+
+
+        // If the table built for our words cannot fit in the requested
+        // table_width, call again this function, to continue printing from
+        // where we left.
+        if (need_another_table)
+            print_words_table(maximumX, table_width);
+    }
+}
+
+
+// will return a pointer to the last node who's word can be printed
+// or NULL if all of the words + table structure can fit the requested max width
+Words* check_table_width(Words *head, unsigned table_width)
+{
+    Words *current = head;      // used to iterate through our linked list nodes
+
+    // get the number of chars the "time x 1" have
+    unsigned rep_width = calculate_rep_width(1);
+    unsigned timesx_initial_width = calculate_timesx_width(0) + rep_width;
+
+    // store the starting width
+    unsigned current_width = timesx_initial_width;
+
+    while (current != NULL)
+    {
+        // get the current word width
+        unsigned curr_word_width = strlen(current->word);
+
+        // get the number of characters needed to print current repetition count
+        unsigned curr_word_rep_width =
+                                    calculate_rep_width(current->repetitions);
+
+        // make sure we always have the exact number of characters required
+        // to print the highest repetitions count reserved in current_width
+        if (curr_word_rep_width > rep_width)
+        {
+            current_width += curr_word_rep_width - rep_width;
+            rep_width = curr_word_rep_width;
+        }
+
+        // also add the lenght of the current word
+        current_width += curr_word_width + 1;   // +1 for the words separator
+
+        if (current_width > table_width)
+            break;
+
+        // if we still have available space, advance to the next word
+        current = current->next;
     }
 
-
-    printf("%*s%*c ", (int)timesx_initial_width-2, "Word",
-           (int)timesx_initial_width/2-2, '|');
-
-    while (currentX != (current != head ? current : NULL)) {
-        printf("%s ", currentX->word);
-        currentX = currentX->next;
-    }
-
-    if (need_another_table)
-        print_words_table(current, table_width);
+    return current;
 }
 
 
 bool valid_table_width(Words *head, unsigned *table_width)
 {
-    // find the biggest width for our words in the list
+    // get the maximum width and maximum number of repetitions of any word
     Words *current = head;
-    unsigned biggest_width = 0;
+    unsigned max_word_width = 0;
+    unsigned max_rep_no = 0;
 
     while (current != NULL)
     {
         unsigned current_width = strlen(current->word);
-        if (current_width > biggest_width)
-            biggest_width = current_width;
+        if (current_width > max_word_width)
+            max_word_width = current_width;
+
+        unsigned current_rep_no = current->repetitions;
+        if (current_rep_no > max_rep_no)
+            max_rep_no = current_rep_no;
+
         current = current->next;
     }
 
-    // if the biggest_width is bigger than the requested table width,
+    // calculate the minimum width for the table
+    // based on the needed table structure and widest word
+    unsigned min_width = calculate_timesx_width(max_rep_no) + max_word_width;
+
+    // if the max_word_width is bigger than the requested table width,
     // ask the user for a new width
-    while (*table_width < biggest_width)
+    while (*table_width < min_width)
     {
         puts("\nSeems like your requested table width is smaller than at least"
              "\none of the words which are to be printed.");
@@ -449,7 +518,10 @@ bool valid_table_width(Words *head, unsigned *table_width)
         }
 
         printf("\n\nPlease enter a new size for the table width bigger than %u"
-               "\nor type Q to quit this program: -> ", biggest_width);
+               "\nor type Q to quit this program: -> ",
+               min_width - 1);      // min_width is what we want
+                                    // bigger than ... => min_width - 1
+
         fscanf(stdin, "%u", table_width);
     }
 
@@ -475,7 +547,9 @@ unsigned calculate_rep_width(unsigned rep)
 unsigned calculate_timesx_width(const unsigned max_rep)
 {
     char timesx[] = "times x 1";
-    unsigned timesx_width = strlen(timesx);
+    // + 3 because we also print 2 additional spaces and one newline character
+    // in print_words_table
+    unsigned timesx_width = strlen(timesx) + 3;
     unsigned rep_width = calculate_rep_width(max_rep);
 
     return timesx_width + rep_width;
@@ -484,22 +558,23 @@ unsigned calculate_timesx_width(const unsigned max_rep)
 
 void print_specifier(int width, char symbol)
 {
-    /* We have 3 possible scenarios */
-    // 1 - width is one
+    /* We have 4 possible scenarios */
+
     if (width == 1)
         printf("%c|", symbol);
 
-    // 2 - width is an even number
-    else if ((width % 2) == 0)
-        printf("%*c%c%*c", width / 2, ' ',
-               symbol,
-               width / 2, '|');
+    else if (width == 2)
+            printf("%c |", symbol);
 
-    // 3 - width is an odd number
+    else if ((width % 2) == 0)
+        printf("%*c%c%*c", width / 2 - 1, ' ',
+                           symbol,
+                           width / 2 + 1, '|');
+
     else if ((width % 2) == 1)
         printf("%*c%c%*c", width / 2, ' ',
-               symbol,
-               width - width / 2, '|');
+                           symbol,
+                           width - width / 2, '|');
 }
 
 
@@ -531,22 +606,34 @@ void superfluous_delay()
     time_t then;
     time(&then);
     srand((unsigned)time(NULL));
+
     // get a random float number from 0.0 to 2.0
     float delay = (float)(rand() / (float)(RAND_MAX / 2.0f));
     while (difftime(time(NULL), then) < delay);
     puts("\n\t...");
+
+    // and again
+    then = time(NULL);
+    delay = (float)(rand() / (float)(RAND_MAX / 2.0f));
+    while (difftime(time(NULL), then) < delay);
 }
 
 
 void blastoff()
 {
+    time_t then;
     for (int x = 3; x > 0; x--)
     {
-        time_t then;
         time(&then);
         while (difftime(time(NULL), then) < 1.0);
         printf("\n\t%d", x);
     }
+
+    // hold the last second
+    then = time(NULL);
+    while (difftime(time(NULL), then) < 1.0);
+
+    puts("\n\n\n");     // big explosion
 }
 
 
