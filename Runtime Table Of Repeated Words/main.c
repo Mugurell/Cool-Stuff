@@ -20,7 +20,7 @@
 *  --- None ---
 *
 *  Notes:
-*  Sudoku is for pussies!
+*  ---
 *
 ********************************************************************************
 *******************************************************************************/
@@ -37,7 +37,6 @@
 
 // will use a linked list to hold our "map" of words
 typedef struct words {
-    // data used to construct the table
     char *word;
     unsigned repetitions;
 
@@ -53,14 +52,23 @@ Words *count_words(char*);
 // in a table constructed at runtime
 void print_words_table(Words*, unsigned);
 
-// little helper functions
-Words* check_table_width(Words*, unsigned);
+
+// check if widest word + table structure fits in the requested width
 bool valid_table_width(Words*, unsigned*);
+// return a pointer to the last word which can be printed in the requested width
+Words* get_printable_block(Words*, unsigned);
+// how many characters does the maximum no of repetitions occupy when printed
 unsigned calculate_rep_width(unsigned);
+// how many characters needed to print table structure - Y axis
 unsigned calculate_timesx_width(const unsigned);
-void print_specifier(int, char);
+// print the Y axis description : "times x -no of repetitions-"
 void print_timesx(unsigned, const unsigned);
+// print the char received in the middle of the space received
+void print_specifier(int, char);
+
+// free all the nodes of the of our linked list
 void free_list(Words*);
+
 void superfluous_delay();               // but cool nonetheless
 void blastoff();                        // create some tension
 void clear_stdin();                     // consume any leftover input
@@ -340,7 +348,7 @@ void print_words_table(Words *head, unsigned table_width)
 
     // Determine if our table can fit the requested table_width
     // If not, we'll print until that limit - lenght of the X coordinate.
-    maximumX = check_table_width(head, table_width);
+    maximumX = get_printable_block(head, table_width);
 
     // if the requested table width is smaller than the total width of the
     // identical words plus the table's structure
@@ -421,7 +429,7 @@ void print_words_table(Words *head, unsigned table_width)
 
 // will return a pointer to the last node who's word can be printed
 // or NULL if all of the words + table structure can fit the requested max width
-Words* check_table_width(Words *head, unsigned table_width)
+Words* get_printable_block(Words* head, unsigned table_width)
 {
     Words *current = head;      // used to iterate through our linked list nodes
 
