@@ -1,4 +1,24 @@
-﻿namespace WF___Tic_Tac_Toe
+﻿//
+//  Author:           Lingurar Petru-Mugurel
+//  Written:          21 Aug 2015  11:27:34
+//  Last updated:           ---
+//
+//
+//  Description:
+//   Really nice Tic Tac Toe game.
+//
+//  Bugs:
+//    --- None ---
+//
+//  TODO:
+//    --- None --- 
+//
+//  Notes:
+//    --- 
+//
+
+
+namespace WF___Tic_Tac_Toe
 {
     partial class Form1
     {
@@ -36,6 +56,7 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newGameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.resetScoresToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.rulesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -49,7 +70,6 @@
             this.C2 = new System.Windows.Forms.Button();
             this.C3 = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
-            this.resetScoresToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.draws_score_box = new System.Windows.Forms.Label();
             this.user_score_box = new System.Windows.Forms.Label();
             this.ai_score_box = new System.Windows.Forms.Label();
@@ -71,7 +91,6 @@
             // 
             resources.ApplyResources(this.label3, "label3");
             this.label3.Name = "label3";
-            this.label3.Click += new System.EventHandler(this.label3_Click);
             // 
             // A1
             // 
@@ -82,6 +101,7 @@
             // 
             // menuStrip1
             // 
+            this.menuStrip1.BackColor = System.Drawing.SystemColors.ControlLight;
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.helpToolStripMenuItem});
@@ -103,6 +123,12 @@
             resources.ApplyResources(this.newGameToolStripMenuItem, "newGameToolStripMenuItem");
             this.newGameToolStripMenuItem.Click += new System.EventHandler(this.newGameToolStripMenuItem_Click);
             // 
+            // resetScoresToolStripMenuItem
+            // 
+            this.resetScoresToolStripMenuItem.Name = "resetScoresToolStripMenuItem";
+            resources.ApplyResources(this.resetScoresToolStripMenuItem, "resetScoresToolStripMenuItem");
+            this.resetScoresToolStripMenuItem.Click += new System.EventHandler(this.resetScoresToolStripMenuItem_Click);
+            // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
@@ -121,6 +147,7 @@
             // 
             this.rulesToolStripMenuItem.Name = "rulesToolStripMenuItem";
             resources.ApplyResources(this.rulesToolStripMenuItem, "rulesToolStripMenuItem");
+            this.rulesToolStripMenuItem.Click += new System.EventHandler(this.rulesToolStripMenuItem_Click);
             // 
             // aboutToolStripMenuItem
             // 
@@ -189,12 +216,6 @@
             resources.ApplyResources(this.label4, "label4");
             this.label4.Name = "label4";
             // 
-            // resetScoresToolStripMenuItem
-            // 
-            this.resetScoresToolStripMenuItem.Name = "resetScoresToolStripMenuItem";
-            resources.ApplyResources(this.resetScoresToolStripMenuItem, "resetScoresToolStripMenuItem");
-            this.resetScoresToolStripMenuItem.Click += new System.EventHandler(this.resetScoresToolStripMenuItem_Click);
-            // 
             // draws_score_box
             // 
             resources.ApplyResources(this.draws_score_box, "draws_score_box");
@@ -204,7 +225,6 @@
             // 
             resources.ApplyResources(this.user_score_box, "user_score_box");
             this.user_score_box.Name = "user_score_box";
-            this.user_score_box.Click += new System.EventHandler(this.label5_Click);
             // 
             // ai_score_box
             // 
@@ -215,6 +235,7 @@
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.SystemColors.MenuBar;
             this.Controls.Add(this.ai_score_box);
             this.Controls.Add(this.user_score_box);
             this.Controls.Add(this.draws_score_box);
