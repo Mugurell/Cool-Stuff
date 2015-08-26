@@ -15,13 +15,14 @@
 //    --- None --- 
 //
 //  Notes:
-//    Made in 8 hourse with 0 prior experience with C# and .net framework.
+//    ---
 //
 
 
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+
 
 namespace WF___Tic_Tac_Toe
 {
@@ -32,7 +33,7 @@ namespace WF___Tic_Tac_Toe
         private int user_score = 0;
         private int ai_score = 0;
         private int draws = 0;
-        // if the user declined to play a new game after the last one we need to
+        // if the user declined to play a new game after the last one ended we need to
         // remember the state; will be used as condition in newGameToolStripMenu()
         // and before calling flowerPowerAI in button_click
         private bool canceled_new_game = false;     
@@ -43,8 +44,11 @@ namespace WF___Tic_Tac_Toe
         }
 
 
+        // the button pressed by the user will be received as a generic object - sender
+        // print 'X', updates all variables, check for winner, pass turn to the AI
         private void button_click(object sender, EventArgs e)
         {
+            // cast the generic button to an Button
             Button b = (Button)sender;
             if (user_turn)
             {
@@ -59,12 +63,12 @@ namespace WF___Tic_Tac_Toe
                 // for every move increase the turn count
                 ++turn_count;
 
-                // after any player could have made 3 moves check for a winner
+                // after the user could have made 3 moves check for a winner
                 if (turn_count >= 5)
                     checkForWinner();
 
                 // now call the AI to make it's move
-                // will also check for winner
+                // this function will also check for winner
                 if (!user_turn && !canceled_new_game)
                     flowerPowerAI();
             }
@@ -155,7 +159,7 @@ namespace WF___Tic_Tac_Toe
 
 
 
-       // disable all buttons
+       // when the gamne ended, disable all buttons so they can't be updated anymore
        private void disableButtons()
        {
            /**
@@ -241,18 +245,10 @@ namespace WF___Tic_Tac_Toe
             // for every move increase the turn count
             ++turn_count;
 
-            // after any player could have made 3 moves check for a winner
-            if (turn_count >= 5)
+            // after the AI could have made 3 moves check for a winner
+            if (turn_count >= 6)
                 checkForWinner();
         }
-
-
-
-        private void label2_Click(object sender, EventArgs e)
-        {
-            //Todo: If time, clicking this will change between clever/dumb AI.
-        }
-
 
 
 
@@ -281,18 +277,16 @@ namespace WF___Tic_Tac_Toe
 
         private void resetScoresToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            // if the user pressed this after finishing a game,
-            // there's no need to warn him about ending the current game..
-            if (canceled_new_game)
-            {
-                resetButtonsAndTurns();
-            }
-
-            // print a warning message and let the user choose if he really
-            // wants to end the current game and reset all scores
-            else if (MessageBox.Show("This will end your current game!", "Warning",
+            /**
+             * if the user pressed this after finishing a game, there's no need to warn him about 
+             * ending the current game..
+             * else print a warning message and let the user choose if he really wants to end the 
+             * current game and reset all scores
+             */
+            if (canceled_new_game ||  MessageBox.Show("This will end your current game!", "Warning",
                 MessageBoxButtons.OKCancel) == System.Windows.Forms.DialogResult.OK)
             {
+                reset_time:;
                 // reset all buttons, turn_count and who's turn is it
                 resetButtonsAndTurns();
 
@@ -323,7 +317,7 @@ namespace WF___Tic_Tac_Toe
                            + "\nYou play on a three by three game board."
                            + "\nThe first player is known as X and the second is O."
                            + "\nPlayers alternate placing Xs and Os on the game board until"
-                           + "\neither oppent has three in a row or all nine squares are filled."
+                           + "\neither oppent has three in a row or all nine squares are filled."   
                            + "\nX always goes first, and in the event that no one has three "
                            + "\nin a row, the stalemate is called a cat game."
                            + "\n\nYou are with X's and the PC will use O's.";
